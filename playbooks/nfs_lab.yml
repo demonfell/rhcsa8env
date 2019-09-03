@@ -36,3 +36,12 @@
       become: yes
       when: "'ipa' in inventory_hostname"
       tags: begin
+
+    - name: Enable nfs service in the fireall on ipa
+      firewalld:
+        service: nfs
+        permanent: yes
+        state: enabled
+      become: yes
+      when: "'ipa' in inventory_hostname"
+      tags: begin
