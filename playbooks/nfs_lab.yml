@@ -1,0 +1,38 @@
+---
+- name: Configure servers for autofs lab
+  hosts: all
+  tasks:
+    - name: Create directories for mounts on ipa
+      file: 
+        path="{{ item }}" 
+        state=directory 
+        mode=777 
+        owner=root 
+        group=root
+      with_items: 
+        - "/business_shares/direct/external"
+        - "/business_shares/indirect/internal/north"
+        - "/business_shares/indirect/south"
+        - "/business_shares/indirect/middle"
+      become: yes
+      when: "'ipa' in inventory_hostname"
+      tags: begin
+
+    - name: copy /etc/exports into place on ipa
+      template: 
+        src="{{ playbook_dir }}/../templates/exports.j2" 
+        dest=/etc/exports 
+        owner=root 
+        group=root
+      become: yes
+      when: "'ipa' in inventory_hostname"
+      tags: begin
+  
+    - name: Enable and start the nfs service on ipa
+      service:
+        name: nfs-server
+        state: started
+        enabled: yes
+      become: yes
+      when: "'ipa' in inventory_hostname"
+      tags: begin
