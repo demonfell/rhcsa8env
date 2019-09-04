@@ -1,0 +1,32 @@
+---
+- name: create the consultants group
+  group: 
+    name: consultants
+    gid: 10001
+    state: present
+  tags: begin
+
+- name: create the ops group
+  group: 
+    name: ops
+    gid: 10002
+    state: present
+  tags: begin
+
+- name: create the consultant users
+  user: 
+    name: "{{ item }}"
+    group: consultants
+  with_items: 
+    - "consultant1"
+    - "consultant2"
+  tags: begin
+
+- name: create the ops users
+  user: 
+    name: "{{ item }}"
+    group: ops
+  with_items: 
+    - "ops1"
+    - "ops2"
+  tags: begin
