@@ -37,7 +37,7 @@
       when: "'ipa' in inventory_hostname"
       tags: begin
 
-    - name: Enable nfs service in the fireall on ipa
+    - name: Enable nfs service in the firewall on ipa
       firewalld:
         service: nfs
         permanent: yes
@@ -45,3 +45,26 @@
       become: yes
       when: "'ipa' in inventory_hostname"
       tags: begin
+
+    - name: Create the needed groups
+      include: "{{ playbook_dir }}/../roles/autofs_ipa_groups.yml"
+      become: yes
+      
+    - name: Set consultant share permissions
+      file: 
+        path: /business_shares/direct/external
+        group: consultants
+        mode: '0754'  
+      when: "'ipa' in inventory_hostname"
+      become: yes
+      tags: begin
+
+    - name: Set ops share permissions
+      file: 
+        path: /business_shares/indirect
+        group: ops
+        mode: '0754'  
+      when: "'ipa' in inventory_hostname"
+      become: yes
+      tags: begin
+      
