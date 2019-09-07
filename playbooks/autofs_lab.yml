@@ -11,7 +11,7 @@
         group=root
       with_items: 
         - "/business_shares/direct/external"
-        - "/business_shares/indirect/internal/north"
+        - "/business_shares/indirect/north"
         - "/business_shares/indirect/south"
         - "/business_shares/indirect/middle"
       become: yes
@@ -54,7 +54,8 @@
       file: 
         path: /business_shares/direct/external
         group: consultants
-        mode: '0754'  
+        mode: '0774'
+        recurse: yes  
       when: "'ipa' in inventory_hostname"
       become: yes
       tags: begin
@@ -63,7 +64,8 @@
       file: 
         path: /business_shares/indirect
         group: ops
-        mode: '0754'  
+        mode: '0774'
+        recurse: yes  
       when: "'ipa' in inventory_hostname"
       become: yes
       tags: begin
