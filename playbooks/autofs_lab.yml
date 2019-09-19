@@ -11,7 +11,7 @@
         group=root
       with_items: 
         - "/business_shares/direct/external"
-        - "/business_shares/indirect/internal/north"
+        - "/business_shares/indirect/north"
         - "/business_shares/indirect/south"
         - "/business_shares/indirect/middle"
       become: yes
@@ -26,6 +26,13 @@
         group=root
       become: yes
       when: "'ipa' in inventory_hostname"
+      tags: begin
+
+    - name: install NFS
+      yum:
+        name: nfs-utils
+        state: latest
+      become: yes
       tags: begin
   
     - name: Enable and start the nfs service on ipa
@@ -46,15 +53,24 @@
       when: "'ipa' in inventory_hostname"
       tags: begin
 
+    - name: restart the firewalld service to register the change
+      service:
+        name: firewalld
+        state: restarted
+      become: yes
+      when: "'ipa' in inventory_hostname"
+      tags: begin
+      
     - name: Create the needed groups
-      include: "{{ playbook_dir }}/../roles/autofs_ipa_groups.yml"
+      include: "{{ playbook_dir }}/../roles/autofs_groups.yml"
       become: yes
       
     - name: Set consultant share permissions
       file: 
         path: /business_shares/direct/external
         group: consultants
-        mode: '0754'  
+        mode: '0774'_
+        recurse: yes  
       when: "'ipa' in inventory_hostname"
       become: yes
       tags: begin
@@ -63,7 +79,8 @@
       file: 
         path: /business_shares/indirect
         group: ops
-        mode: '0754'  
+        mode: '0774'
+        recurse: yes  
       when: "'ipa' in inventory_hostname"
       become: yes
       tags: begin
