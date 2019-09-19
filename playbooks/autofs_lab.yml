@@ -69,7 +69,7 @@
       file: 
         path: /business_shares/direct/external
         group: consultants
-        mode: '0774'_
+        mode: '0774'
         recurse: yes  
       when: "'ipa' in inventory_hostname"
       become: yes
